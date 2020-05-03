@@ -1,0 +1,28 @@
+<main>
+  <sky-fluid-grid>
+    <sky-row>
+      <sky-column>
+        <h1>
+          BLACKOUT
+        </h1>
+
+        <p>
+          I made a way for us to play Blackout together. Below will be a list of games that are currently going. Either click into an
+           existing game, or if you are the one here, click 'Start new game'.
+        </p>
+
+        <sky-repeater
+          expandMode="none">
+          <sky-repeater-item
+            *ngFor="let game of games">
+            <sky-repeater-item-content>
+              <a [routerLink]="'/pregame'" [queryParams]="{gameId: game}">Game: {{game}}</a>
+            </sky-repeater-item-content>
+          </sky-repeater-item>
+        </sky-repeater>
+
+        <button style="margin-bottom: 25px;" (click)="initGame()">Start new game</button>
+      </sky-column>
+    </sky-row>
+  </sky-fluid-grid>
+</main>

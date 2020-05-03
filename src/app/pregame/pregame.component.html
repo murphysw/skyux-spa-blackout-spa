@@ -1,0 +1,43 @@
+<main *ngIf="pageLoaded">
+  <sky-fluid-grid>
+    <sky-row>
+      <sky-column>
+        <h1>
+          BLACKOUT
+        </h1>
+
+        <h2 *ngIf="gameStarted">
+          Game has been started, no more players can be added.
+        </h2>
+
+        <p>
+          Setting up the game. Have each player come to this page and add themselves (or someone else can add them).
+          Once all players have been added, press 'Start game' to deal the first hand.
+          Each player should click the link next to their name to be taken their play screen.
+        </p>
+
+        <p>
+          The game will be played with {{decksRequired}} decks. More will be added if enough players are added.
+        </p>
+        <sky-repeater
+          [expandMode]="none">
+          <sky-repeater-item
+            *ngFor="let player of players">
+            <sky-repeater-item-content>
+              Name: {{player.name}}
+              Id: {{player.id}}
+              <button (click)="redirectToPlayer(player.id)">Go to player's screen</button>
+              <button *ngIf="!gameStarted" (click)="removePlayer(player.id)">Remove player</button>
+            </sky-repeater-item-content>
+          </sky-repeater-item>
+        </sky-repeater>
+
+        <ng-container *ngIf="!gameStarted">
+          <input [(ngModel)]="addPlayerName" placeholder="Name"/>
+          <button [disabled]="!canAddPlayer()" (click)="addPlayer()">Add player</button>
+          <button style="margin-bottom: 25px;" (click)="startGame()">Start game</button>
+        </ng-container>
+      </sky-column>
+    </sky-row>
+  </sky-fluid-grid>
+</main>

@@ -1,0 +1,9 @@
+{
+  "extends": "@skyux-sdk/builder/tslint",
+  "rules": {
+    "variable-name": [
+      true,
+      "allow-snake-case"
+    ]
+  }
+}

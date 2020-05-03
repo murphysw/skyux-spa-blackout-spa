@@ -1,0 +1,29 @@
+<sky-list
+  [data]="data"
+>
+  <sky-list-view-grid
+    fit="scroll"
+    #grid
+  >
+    <sky-grid-column
+      field="roundNumber"
+      heading="Round"
+    ></sky-grid-column>
+    <sky-grid-column
+      *ngFor="let player of scoreboard.players"
+      [field]="player.id"
+      [heading]="player.name"
+    >
+      <ng-template let-row="row" let-value="value">
+        <ng-container *ngIf="value == -1">
+          <sky-icon
+            icon="circle">
+          </sky-icon>
+        </ng-container>
+        <ng-container *ngIf="value != -1">
+            {{value}}
+        </ng-container>
+      </ng-template>
+    </sky-grid-column>
+  </sky-list-view-grid>
+</sky-list>
