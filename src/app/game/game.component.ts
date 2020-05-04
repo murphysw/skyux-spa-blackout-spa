@@ -11,6 +11,8 @@ import ScoreboardDisplay from '../shared/api-models/scoreboardDisplay';
 import { SkyFlyoutInstance, SkyFlyoutService, SkyFlyoutConfig } from '@skyux/flyout';
 import { ScoreboardComponent } from './scoreboard.component';
 import Card from '../shared/api-models/card';
+import { SkyModalService } from '@skyux/modals';
+import { ErrorModalComponent } from './errorModal.component';
 
 @Component({
   selector: 'my-game',
@@ -30,12 +32,13 @@ export class GameComponent implements OnInit {
   public data: any[];
   @Input() public bid: number;
   @Input() public playingCard: Card;
-  @Input() public toggleDescending: number = 1;
+  public toggleDescending: number = 1;
   private suitOrder: string[] = ['c', 'd', 's', 'h'];
 
   constructor(
     private route: ActivatedRoute,
     private flyoutService: SkyFlyoutService,
+    private modal: SkyModalService,
     private apiService: ApiService) {
     this.route.queryParams.subscribe(params => {
       this.gameId = params['gameId'];
@@ -77,6 +80,8 @@ export class GameComponent implements OnInit {
   public playCard(): void {
     this.apiService.playCard(this.gameId, this.playerId, this.playingCard.suit, this.playingCard.value).subscribe(() => {
       this.refreshGameData();
+    }, () => {
+      this.modal.open(ErrorModalComponent);
     });
   }
 
@@ -109,12 +114,26 @@ export class GameComponent implements OnInit {
     return this.findPlayerById(playerId).name;
   }
 
-  public getOverUnder(): number {
+  public getOverUnder(): string {
     let total = this.scoreboard.current_bids.round;
     for (let num of Object.values(this.scoreboard.current_bids.bids)) {
       total -= num;
     }
-    return total;
+    let text: string = '';
+    if (total === 0) {
+      text = 'Even';
+    } else if (total > 0) {
+      text = total + ' under';
+    } else {
+      text = Math.abs(total) + ' over';
+    }
+    return text;
+  }
+
+  public changeToggle(): void {
+    if (this.isCurrentPlayer()) {
+      this.refreshGameData();
+    }
   }
 
   private findPlayerById(playerId: string): Player {

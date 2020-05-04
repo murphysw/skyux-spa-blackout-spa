@@ -16,12 +16,29 @@
           <sky-repeater-item
             *ngFor="let game of games">
             <sky-repeater-item-content>
-              <a [routerLink]="'/pregame'" [queryParams]="{gameId: game}">Game: {{game}}</a>
+              <a [routerLink]="'/pregame'" [queryParams]="{gameId: game.id}">Game: {{game.name}}</a>
             </sky-repeater-item-content>
           </sky-repeater-item>
         </sky-repeater>
+        <br>
 
-        <button style="margin-bottom: 25px;" (click)="initGame()">Start new game</button>
+        <label>New game name:
+          <input [(ngModel)]="gameName" style="margin-left: 5px;">
+        </label>
+        <br>
+        <button [disabled]="!gameName" style="margin-bottom: 25px;" (click)="initGame()">Start new game</button>
+
+        <h1>Latest updates:</h1>
+        <h2>5/3/20</h2>
+        <ul>
+          <li>Updated text around round number, over/under</li>
+          <li>Removed suit letter from trump, hid large trump card after bidding complete</li>
+          <li>Added game name so it's easier to find the game you want</li>
+          <li>Added error popup when playing an invalid card</li>
+          <li>Added dotted line around projected winner of hand</li>
+          <li>COMING SOON: Better bidding validation</li>
+        </ul>
+
       </sky-column>
     </sky-row>
   </sky-fluid-grid>

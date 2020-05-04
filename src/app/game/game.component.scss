@@ -6,6 +6,10 @@
   border: 5px solid yellow;
 }
 
+.tempHighlightedCard {
+  border: 3px dotted yellow;
+}
+
 .playedCard {
   vertical-align: top;
   display: inline-block;
@@ -28,6 +32,10 @@
   margin-left: 15px;
 }
 
-.scorecard {
+.extraBottom {
   margin-bottom: 25px;
+}
+
+.activePlayer {
+  background-color: #ead540d4;
 }

@@ -51,9 +51,9 @@ public getCurrentGames(): Observable<any> {
 }
 
 /* POST initialize game */
-public initializeGame(): Observable<any> {
+public initializeGame(gameName: string): Observable<any> {
   let headers = this.getHeaders();
-  return this.httpClient.post(`${this.basePath}/games/`, {}, {headers: headers});
+  return this.httpClient.post(`${this.basePath}/games/`, {name: gameName}, {headers: headers});
 }
 
 // /* POST add Player */

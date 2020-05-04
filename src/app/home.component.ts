@@ -1,5 +1,5 @@
 import {
-  Component, OnInit
+  Component, OnInit, Input
 } from '@angular/core';
 import { ApiService } from './shared/api-service';
 
@@ -10,7 +10,8 @@ import { ApiService } from './shared/api-service';
 
 export class HomeComponent implements OnInit {
   private apiService: ApiService;
-  public games: string[];
+  public games: {name: string, id: string}[];
+  @Input() public gameName: string = '';
 
   constructor(apiService: ApiService) {
     this.apiService = apiService;
@@ -21,7 +22,7 @@ export class HomeComponent implements OnInit {
   }
 
   public initGame() {
-    this.apiService.initializeGame().subscribe((value: any) => {
+    this.apiService.initializeGame(this.gameName).subscribe((value: any) => {
       this.getGames();
     });
   }

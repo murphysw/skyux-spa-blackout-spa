@@ -1,17 +1,18 @@
 <main *ngIf="pageLoaded">
+  <div  [ngClass]="{'activePlayer': gameboard.current_player_id === playerId}">
   <sky-fluid-grid>
     <sky-row>
       <sky-column>
         <h1>
           Gameboard for {{player.name}}
         </h1>
-        <h2>Playing round #{{gameboard.current_round}}</h2>
+        <h2>Playing {{gameboard.current_round}} hand</h2>
 
         <h1>Waiting on: {{getCurrentPlayer()}}</h1>
-        <h1 class="trump">Trump:</h1>
-        <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="100">
-
         <ng-container *ngIf="!gameboard.bidding_complete">
+          <h1 class="trump">Trump:</h1>
+          <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="100">
+
           <h2>Bidding</h2>
           <input type="number" [(ngModel)]="bid">
           <button *ngIf="isCurrentPlayer()" (click)="placeBid()">Place bid</button>
@@ -22,7 +23,10 @@
           <p></p>
             <div class="playedCard" *ngFor="let card of gameboard.current_hand">
               <img src="{{apiService.imagePath}}/cards/{{getImageName(card.card)}}.png" height="100" class="card"
-                [ngClass]="{'highlightedCard': isHandFinished() && card.played_by === gameboard.current_player_id}">
+                [ngClass]="{
+                  'highlightedCard': isHandFinished() && card.played_by === gameboard.current_player_id,
+                  'tempHighlightedCard': !isHandFinished() && card.played_by === gameboard.projected_hand_winner
+                }">
               <span class="playedBy">{{getPlayerNameById(card.played_by)}}</span>
             </div>
             <ng-container *ngIf="isHandFinished()">
@@ -36,7 +40,7 @@
         </ng-container>
 
 
-        <h2>Hand:</h2>
+        <h2>Hand: <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="50"></h2>
         <p></p>
         <label *ngFor="let card of hand">
           <img src="{{apiService.imagePath}}/cards/{{getImageName(card)}}.png" height="100" class="card" [ngClass]="{'highlightedCard': playingCard == card}">
@@ -48,7 +52,7 @@
 
         <sky-definition-list>
           <sky-definition-list-heading>
-            Tricks taken: ({{getOverUnder()}} left)
+            Tricks taken: ({{getOverUnder()}})
           </sky-definition-list-heading>
           <sky-definition-list-content
             *ngFor="let player of gameboard.players">
@@ -61,18 +65,38 @@
           </sky-definition-list-content>
         </sky-definition-list>
 
-        <button class="scorecard" (click)="openScoreboardFlyout()">Scorecard</button>
-        <div>
-          <label>
-            Hand ascending
-            <input type="radio" [(ngModel)]="toggleDescending" value=1>
-          </label>
-          <label>
-            Hand descending
-            <input type="radio" [(ngModel)]="toggleDescending" value=-1>
-          </label>
+        <button class="extraBottom" (click)="openScoreboardFlyout()">Scorecard</button>
+        <div class="extraBottom">
+          <sky-radio-group
+            name="toggleDescending"
+            [(ngModel)]="toggleDescending"
+          >
+            <ul
+              class="sky-list-unstyled"
+            >
+              <li>
+                <sky-radio
+                  [value]="1"
+                  (change)="changeToggle()"
+                >
+                  <sky-radio-label>
+                    Hand ascending
+                  </sky-radio-label>
+                </sky-radio>
+                <sky-radio
+                  [value]="-1"
+                  (change)="changeToggle()"
+                >
+                  <sky-radio-label>
+                    Hand descending
+                  </sky-radio-label>
+                </sky-radio>
+              </li>
+            </ul>
+          </sky-radio-group>
         </div>
       </sky-column>
     </sky-row>
   </sky-fluid-grid>
+</div>
 </main>
