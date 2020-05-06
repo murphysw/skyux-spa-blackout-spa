@@ -1,6 +1,6 @@
 
 import {
-  Component
+  Component, Inject
 } from '@angular/core';
 
 import {
@@ -14,6 +14,7 @@ import {
 export class ErrorModalComponent {
 
   constructor(
-    public instance: SkyModalInstance
+    public instance: SkyModalInstance,
+    @Inject('Text') public text: string
   ) { }
 }

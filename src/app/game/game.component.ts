@@ -49,7 +49,7 @@ export class GameComponent implements OnInit {
   public ngOnInit() {
     this.refreshGameData();
     interval(1000).subscribe(() => {
-      if (!this.isCurrentPlayer()) {
+      if (!this.isCurrentPlayer() || this.gameboard.round_finished) {
         this.refreshGameData();
       }
     });
@@ -71,17 +71,23 @@ export class GameComponent implements OnInit {
   }
 
   public placeBid(): void {
-    this.apiService.placeBid(this.gameId, this.playerId, this.bid).subscribe(() => {
-      this.refreshGameData();
-      this.bid = undefined;
-    });
+    if (!Number.isInteger(this.bid) || this.bid < 0 || this.bid > this.gameboard.current_round) {
+      this.modal.open(ErrorModalComponent,
+        [{ provide: 'Text', useValue: 'Bid must be a number between 0 and ' + this.gameboard.current_round }]);
+    } else {
+      this.apiService.placeBid(this.gameId, this.playerId, this.bid).subscribe(() => {
+        this.refreshGameData();
+        this.bid = undefined;
+      });
+    }
   }
 
   public playCard(): void {
     this.apiService.playCard(this.gameId, this.playerId, this.playingCard.suit, this.playingCard.value).subscribe(() => {
       this.refreshGameData();
     }, () => {
-      this.modal.open(ErrorModalComponent);
+      this.modal.open(ErrorModalComponent,
+        [{ provide: 'Text', useValue: 'This card cannot be played, you must follow suit' }]);
     });
   }
 

@@ -1,3 +1,4 @@
+<app-nav></app-nav>
 <main *ngIf="pageLoaded">
   <div  [ngClass]="{'activePlayer': gameboard.current_player_id === playerId}">
   <sky-fluid-grid>
@@ -13,9 +14,11 @@
           <h1 class="trump">Trump:</h1>
           <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="100">
 
-          <h2>Bidding</h2>
-          <input type="number" [(ngModel)]="bid">
-          <button *ngIf="isCurrentPlayer()" (click)="placeBid()">Place bid</button>
+          <form (ngSubmit)="placeBid()" #bidForm="ngForm">
+            <h2>Bidding</h2>
+            <input id="bid" name="bid" type="number" class="form-control" [(ngModel)]="bid" required min="0" [max]="gameboard.current_round">
+            <button type="submit" *ngIf="isCurrentPlayer()" [disabled]="!bidForm.form.valid">Place bid</button>
+          </form>
         </ng-container>
 
         <ng-container *ngIf="gameboard.bidding_complete">

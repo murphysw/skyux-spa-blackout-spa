@@ -1,3 +1,4 @@
+<app-nav></app-nav>
 <main *ngIf="pageLoaded">
   <sky-fluid-grid>
     <sky-row>
@@ -6,15 +7,15 @@
           BLACKOUT
         </h1>
 
-        <h2 *ngIf="gameStarted">
-          Game has been started, no more players can be added.
-        </h2>
-
         <p>
           Setting up the game. Have each player come to this page and add themselves (or someone else can add them).
           Once all players have been added, press 'Start game' to deal the first hand.
-          Each player should click the link next to their name to be taken their play screen.
+          Each player should click the link next to their name to be taken to their play screen.
         </p>
+
+        <h2 *ngIf="gameStarted">
+          Game has been started, no more players can be added.
+        </h2>
 
         <p>
           The game will be played with {{decksRequired}} decks. More will be added if enough players are added.

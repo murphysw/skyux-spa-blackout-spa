@@ -36,7 +36,7 @@ import {
   SkyListModule
 } from '@skyux/list-builder';
 import { SkyRadioModule } from '@skyux/forms';
-import { SkyModalModule } from '@skyux/modals';
+import { SkyModalModule, SkyConfirmModule } from '@skyux/modals';
 
 @NgModule({
   exports: [
@@ -49,6 +49,7 @@ import { SkyModalModule } from '@skyux/modals';
     SkyFlyoutModule,
     SkyIconModule,
     SkyModalModule,
+    SkyConfirmModule,
     SkyRadioModule,
     SkyListViewGridModule,
     SkyListModule,

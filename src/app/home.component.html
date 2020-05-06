@@ -1,3 +1,4 @@
+<app-nav></app-nav>
 <main>
   <sky-fluid-grid>
     <sky-row>
@@ -8,18 +9,33 @@
 
         <p>
           I made a way for us to play Blackout together. Below will be a list of games that are currently going. Either click into an
-           existing game, or if you are the one here, click 'Start new game'.
+           existing game, or if you are the first one here, click 'Start new game'.
         </p>
 
-        <sky-repeater
-          expandMode="none">
-          <sky-repeater-item
-            *ngFor="let game of games">
-            <sky-repeater-item-content>
-              <a [routerLink]="'/pregame'" [queryParams]="{gameId: game.id}">Game: {{game.name}}</a>
-            </sky-repeater-item-content>
-          </sky-repeater-item>
-        </sky-repeater>
+        <sky-definition-list *ngFor="let game of games">
+          <sky-definition-list-heading>
+            <a [routerLink]="'/pregame'" [queryParams]="{gameId: game.id}">{{game.name}}</a>
+          </sky-definition-list-heading>
+          <sky-definition-list-content>
+            <sky-definition-list-label>
+              Game id
+            </sky-definition-list-label>
+            <sky-definition-list-value>
+              {{game.id}}
+            </sky-definition-list-value>
+          </sky-definition-list-content>
+          <sky-definition-list-content>
+            <sky-definition-list-label>
+              Created at
+            </sky-definition-list-label>
+            <sky-definition-list-value>
+              {{formatDate(game.start_date)}}
+            </sky-definition-list-value>
+          </sky-definition-list-content>
+          <sky-definition-list-content>
+            <button (click)="removeGame(game.id, game.name)">Delete game</button>
+          </sky-definition-list-content>
+        </sky-definition-list>
         <br>
 
         <label>New game name:
@@ -29,6 +45,14 @@
         <button [disabled]="!gameName" style="margin-bottom: 25px;" (click)="initGame()">Start new game</button>
 
         <h1>Latest updates:</h1>
+        <h2>5/5/20</h2>
+        <ul>
+          <li>Updated game selection screen, including delete button and sorting by created date</li>
+          <li>Added top nav home button</li>
+          <li>Fixed issue with last trick taker not updating on new round</li>
+          <li>Added better bid validation</li>
+          <li>Fixed updating issue when removing player</li>
+        </ul>
         <h2>5/3/20</h2>
         <ul>
           <li>Updated text around round number, over/under</li>
@@ -36,7 +60,6 @@
           <li>Added game name so it's easier to find the game you want</li>
           <li>Added error popup when playing an invalid card</li>
           <li>Added dotted line around projected winner of hand</li>
-          <li>COMING SOON: Better bidding validation</li>
         </ul>
 
       </sky-column>

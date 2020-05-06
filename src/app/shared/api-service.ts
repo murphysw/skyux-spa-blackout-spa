@@ -56,6 +56,13 @@ public initializeGame(gameName: string): Observable<any> {
   return this.httpClient.post(`${this.basePath}/games/`, {name: gameName}, {headers: headers});
 }
 
+// /* DELETE remove game */
+// router.delete('/games/:game_id', GameController.removeGame);
+public removeGame(gameId: string): Observable<any> {
+  let headers = this.getHeaders();
+  return this.httpClient.delete(`${this.basePath}/games/${gameId}`, {headers: headers});
+}
+
 // /* POST add Player */
 // router.post('/games/:game_id/players', GameController.addPlayer);
 public addPlayer(gameId: string, playerName: string): Observable<string> {
