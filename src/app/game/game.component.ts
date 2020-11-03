@@ -49,7 +49,7 @@ export class GameComponent implements OnInit {
   public ngOnInit() {
     this.refreshGameData();
     interval(1000).subscribe(() => {
-      if (!this.isCurrentPlayer() || this.gameboard.round_finished) {
+      if ((!this.isCurrentPlayer() || this.gameboard.round_finished) && !this.gameboard.game_finished) {
         this.refreshGameData();
       }
     });
@@ -61,8 +61,10 @@ export class GameComponent implements OnInit {
 
   public openScoreboardFlyout(): void {
     const config: SkyFlyoutConfig = {
-      providers: [{provide: 'ScoreDisplay', useValue: this.scoreboard}]
+      providers: [{provide: 'ScoreDisplay', useValue: this.scoreboard}],
+      defaultWidth: window.innerWidth
     };
+
     this.flyout = this.flyoutService.open(ScoreboardComponent, config);
 
     this.flyout.closed.subscribe(() => {

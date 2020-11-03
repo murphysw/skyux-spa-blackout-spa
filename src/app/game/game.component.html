@@ -1,102 +1,110 @@
 <app-nav></app-nav>
 <main *ngIf="pageLoaded">
-  <div  [ngClass]="{'activePlayer': gameboard.current_player_id === playerId}">
+  <div  [ngClass]="{'activePlayer': gameboard.current_player_id === playerId && !gameboard.game_finished}">
   <sky-fluid-grid>
     <sky-row>
       <sky-column>
         <h1>
           Gameboard for {{player.name}}
         </h1>
-        <h2>Playing {{gameboard.current_round}} hand</h2>
+        <div *ngIf="gameboard.game_finished">
+          Game has ended!
+          <div style="margin-top:10px">
+            <button (click)="openScoreboardFlyout()">Scorecard</button>
+          </div>
+        </div>
+        <div *ngIf="!gameboard.game_finished">
+          <h2>Playing {{gameboard.current_round}} hand</h2>
 
-        <h1>Waiting on: {{getCurrentPlayer()}}</h1>
-        <ng-container *ngIf="!gameboard.bidding_complete">
-          <h1 class="trump">Trump:</h1>
-          <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="100">
+          <h1>Waiting on: {{getCurrentPlayer()}}</h1>
+          <ng-container *ngIf="!gameboard.bidding_complete">
+            <h1 class="trump">Trump:</h1>
+            <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="100">
 
-          <form (ngSubmit)="placeBid()" #bidForm="ngForm">
-            <h2>Bidding</h2>
-            <input id="bid" name="bid" type="number" class="form-control" [(ngModel)]="bid" required min="0" [max]="gameboard.current_round">
-            <button type="submit" *ngIf="isCurrentPlayer()" [disabled]="!bidForm.form.valid">Place bid</button>
-          </form>
-        </ng-container>
+            <form (ngSubmit)="placeBid()" #bidForm="ngForm">
+              <h2>Bidding</h2>
+              <input id="bid" name="bid" type="number" class="form-control" [(ngModel)]="bid" required min="0" [max]="gameboard.current_round">
+              <button type="submit" *ngIf="isCurrentPlayer()" [disabled]="!bidForm.form.valid">Place bid</button>
+            </form>
+          </ng-container>
 
-        <ng-container *ngIf="gameboard.bidding_complete">
-          <h2>Table:</h2>
+          <ng-container *ngIf="gameboard.bidding_complete">
+            <h2>Table:</h2>
+            <p></p>
+              <div class="playedCard" *ngFor="let card of gameboard.current_hand">
+                <img src="{{apiService.imagePath}}/cards/{{getImageName(card.card)}}.png" height="100" class="card"
+                  [ngClass]="{
+                    'highlightedCard': isHandFinished() && card.played_by === gameboard.current_player_id,
+                    'tempHighlightedCard': !isHandFinished() && card.played_by === gameboard.projected_hand_winner
+                  }">
+                <span class="playedBy">{{getPlayerNameById(card.played_by)}}</span>
+              </div>
+              <ng-container *ngIf="isHandFinished()">
+                <p>
+                  Trick taken by {{getPlayerNameById(gameboard.current_player_id)}}
+                  <button *ngIf="!gameboard.round_finished && isCurrentPlayer()" (click)="clearTable()">Clear table</button>
+                  <button *ngIf="gameboard.round_finished" (click)="beginNextRound()">Begin next round</button>
+                </p>
+              </ng-container>
+
+          </ng-container>
+
+
+          <h2>Hand: <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="50"></h2>
           <p></p>
-            <div class="playedCard" *ngFor="let card of gameboard.current_hand">
-              <img src="{{apiService.imagePath}}/cards/{{getImageName(card.card)}}.png" height="100" class="card"
-                [ngClass]="{
-                  'highlightedCard': isHandFinished() && card.played_by === gameboard.current_player_id,
-                  'tempHighlightedCard': !isHandFinished() && card.played_by === gameboard.projected_hand_winner
-                }">
-              <span class="playedBy">{{getPlayerNameById(card.played_by)}}</span>
-            </div>
-            <ng-container *ngIf="isHandFinished()">
-              <p>
-                Trick taken by {{getPlayerNameById(gameboard.current_player_id)}}
-                <button *ngIf="!gameboard.round_finished && isCurrentPlayer()" (click)="clearTable()">Clear table</button>
-                <button *ngIf="gameboard.round_finished" (click)="beginNextRound()">Begin next round</button>
-              </p>
-            </ng-container>
+          <label *ngFor="let card of hand">
+            <img src="{{apiService.imagePath}}/cards/{{getImageName(card)}}.png" height="100" class="card" [ngClass]="{'highlightedCard': playingCard == card}">
+            <input type="radio" [(ngModel)]="playingCard" [value]="card" class="hiddenRadio">
+          </label>
+          <p>
+            <button *ngIf="gameboard.bidding_complete && isCurrentPlayer()" (click)=playCard()>Play card</button>
+          </p>
 
-        </ng-container>
+          <sky-definition-list>
+            <sky-definition-list-heading>
+              Tricks taken: ({{getOverUnder()}})
+            </sky-definition-list-heading>
+            <sky-definition-list-content
+              *ngFor="let player of gameboard.players">
+              <sky-definition-list-label>
+                {{player.name}} <ng-container *ngIf="player.id === gameboard.dealer_id">*</ng-container>
+              </sky-definition-list-label>
+              <sky-definition-list-value>
+                {{gameboard.tricks_taken[player.id]}} of {{scoreboard.current_bids["bids"][player.id]}}
+              </sky-definition-list-value>
+            </sky-definition-list-content>
+          </sky-definition-list>
 
-
-        <h2>Hand: <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="50"></h2>
-        <p></p>
-        <label *ngFor="let card of hand">
-          <img src="{{apiService.imagePath}}/cards/{{getImageName(card)}}.png" height="100" class="card" [ngClass]="{'highlightedCard': playingCard == card}">
-          <input type="radio" [(ngModel)]="playingCard" [value]="card" class="hiddenRadio">
-        </label>
-        <p>
-          <button *ngIf="gameboard.bidding_complete && isCurrentPlayer()" (click)=playCard()>Play card</button>
-        </p>
-
-        <sky-definition-list>
-          <sky-definition-list-heading>
-            Tricks taken: ({{getOverUnder()}})
-          </sky-definition-list-heading>
-          <sky-definition-list-content
-            *ngFor="let player of gameboard.players">
-            <sky-definition-list-label>
-              {{player.name}} <ng-container *ngIf="player.id === gameboard.dealer_id">*</ng-container>
-            </sky-definition-list-label>
-            <sky-definition-list-value>
-              {{gameboard.tricks_taken[player.id]}} of {{scoreboard.current_bids["bids"][player.id]}}
-            </sky-definition-list-value>
-          </sky-definition-list-content>
-        </sky-definition-list>
-
-        <button class="extraBottom" (click)="openScoreboardFlyout()">Scorecard</button>
-        <div class="extraBottom">
-          <sky-radio-group
-            name="toggleDescending"
-            [(ngModel)]="toggleDescending"
-          >
-            <ul
-              class="sky-list-unstyled"
+          <button class="extraBottom" (click)="openScoreboardFlyout()">Scorecard</button>
+          <div class="extraBottom">
+            <sky-radio-group
+              name="toggleDescending"
+              [(ngModel)]="toggleDescending"
             >
-              <li>
-                <sky-radio
-                  [value]="1"
-                  (change)="changeToggle()"
-                >
-                  <sky-radio-label>
-                    Hand ascending
-                  </sky-radio-label>
-                </sky-radio>
-                <sky-radio
-                  [value]="-1"
-                  (change)="changeToggle()"
-                >
-                  <sky-radio-label>
-                    Hand descending
-                  </sky-radio-label>
-                </sky-radio>
-              </li>
-            </ul>
-          </sky-radio-group>
+              <ul
+                class="sky-list-unstyled"
+              >
+                <li>
+                  <sky-radio
+                    [value]="1"
+                    (change)="changeToggle()"
+                  >
+                    <sky-radio-label>
+                      Hand ascending
+                    </sky-radio-label>
+                  </sky-radio>
+                  <sky-radio
+                    [value]="-1"
+                    (change)="changeToggle()"
+                  >
+                    <sky-radio-label>
+                      Hand descending
+                    </sky-radio-label>
+                  </sky-radio>
+                </li>
+              </ul>
+            </sky-radio-group>
+          </div>
         </div>
       </sky-column>
     </sky-row>

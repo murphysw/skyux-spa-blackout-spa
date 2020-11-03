@@ -17,4 +17,5 @@ export default interface GameboardDisplay {
     dealer_id: string;
     leader_id: string;
     projected_hand_winner: string;
+    game_finished: boolean;
 }
