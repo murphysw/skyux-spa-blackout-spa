@@ -9,7 +9,7 @@ import PlayerDetailsDisplay from './api-models/playerDetails';
 
 @Injectable()
 export class ApiService {
-  public basePath: string = 'https://agile-harbor-18005.herokuapp.com';
+  public basePath: string = 'https://spencer-blackout-api.up.railway.app/';
   // public basePath: string = 'http://localhost:3000';
   public imagePath: string = 'https://murphysw.github.io/card-images';
   public defaultHeaders = new HttpHeaders();
