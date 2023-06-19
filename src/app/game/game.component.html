@@ -19,7 +19,7 @@
           <h1>Waiting on: {{getCurrentPlayer()}}</h1>
           <ng-container *ngIf="!gameboard.bidding_complete">
             <h1 class="trump">Trump:</h1>
-            <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="100">
+            <img class="trumpCard" src="{{getImagePath()}}/cards/{{getImageName(gameboard.trump)}}.png" height="100">
 
             <form (ngSubmit)="placeBid()" #bidForm="ngForm">
               <h2>Bidding</h2>
@@ -32,7 +32,7 @@
             <h2>Table:</h2>
             <p></p>
               <div class="playedCard" *ngFor="let card of gameboard.current_hand">
-                <img src="{{apiService.imagePath}}/cards/{{getImageName(card.card)}}.png" height="100" class="card"
+                <img src="{{getImagePath()}}/cards/{{getImageName(card.card)}}.png" height="100" class="card"
                   [ngClass]="{
                     'highlightedCard': isHandFinished() && card.played_by === gameboard.current_player_id,
                     'tempHighlightedCard': !isHandFinished() && card.played_by === gameboard.projected_hand_winner
@@ -50,10 +50,10 @@
           </ng-container>
 
 
-          <h2>Hand: <img class="trumpCard" src="{{apiService.imagePath}}/cards/{{getImageName(gameboard.trump)}}.png" height="50"></h2>
+          <h2>Hand: <img class="trumpCard" src="{{getImagePath()}}/cards/{{getImageName(gameboard.trump)}}.png" height="50"></h2>
           <p></p>
           <label *ngFor="let card of hand">
-            <img src="{{apiService.imagePath}}/cards/{{getImageName(card)}}.png" height="100" class="card" [ngClass]="{'highlightedCard': playingCard == card}">
+            <img src="{{getImagePath()}}/cards/{{getImageName(card)}}.png" height="100" class="card" [ngClass]="{'highlightedCard': playingCard == card}">
             <input type="radio" [(ngModel)]="playingCard" [value]="card" class="hiddenRadio">
           </label>
           <p>
