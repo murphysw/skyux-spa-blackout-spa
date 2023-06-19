@@ -144,6 +144,10 @@ export class GameComponent implements OnInit {
     }
   }
 
+  public getImagePath(): string {
+    return this.apiService.imagePath;
+  }
+
   private findPlayerById(playerId: string): Player {
     return this.gameboard.players.find(x => x.id === playerId);
   }
