@@ -33,7 +33,16 @@ export class HomeComponent implements OnInit {
   public removeGame(gameId: string, gameName: string) {
     const dialog: SkyConfirmInstance = this.confirmService.open({
       message: 'Are you sure you want to delete ' + gameName,
-      type: SkyConfirmType.YesCancel
+      type: SkyConfirmType.Custom,
+      buttons: [
+        {
+          action: 'yes',
+          text:"Yes"
+        }, {
+          action:'cancel',
+          text:"Cancel",
+          styleType: "link"
+        }]
     });
 
     dialog.closed.subscribe((result: any) => {
