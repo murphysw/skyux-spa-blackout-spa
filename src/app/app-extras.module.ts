@@ -6,17 +6,15 @@ import {
   AppSkyModule
 } from './app-sky.module';
 import { ApiService } from './shared/api-service';
-import { ScoreboardComponent } from './game/scoreboard.component';
 import { RouterModule } from '@angular/router';
-import { ErrorModalComponent } from './game/errorModal.component';
 
+/**
+ * @deprecated Provided services, imported modules, etc. should be moved to
+ * their respective feature modules, and this module should be removed.
+ */
 @NgModule({
   imports: [
     RouterModule.forRoot([], { useHash: true })
-  ],
-  entryComponents: [
-    ScoreboardComponent,
-    ErrorModalComponent
   ],
   providers: [
     ApiService
